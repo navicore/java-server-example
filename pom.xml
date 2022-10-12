@@ -23,7 +23,16 @@
       <start-class>navicore.demo.Server</start-class>
   </properties>
   <build>
-      <plugins>
+    <plugins>
+          <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>3.0.0</version>
+              <configuration>
+                  <mainClass>navicore.demo.Server</mainClass>
+              </configuration>
+          </plugin>
+
         <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
             <executions>
