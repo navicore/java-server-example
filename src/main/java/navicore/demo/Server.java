@@ -38,21 +38,36 @@ public class Server implements Runnable {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        server.createContext("/test", new MyHttpHandler());
+        server.createContext("/test", new MyServiceHandler());
+        server.createContext("/webhook", new MyWebhookHandler());
         server.start();
     }
 
-    private static class MyHttpHandler implements HttpHandler {
+    private static class MyWebhookHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             OutputStream outputStream = httpExchange.getResponseBody();
-            String msg = "Sever did something.\n";
+            String msg = "The buck stops here.\n";
             httpExchange.sendResponseHeaders(200, msg.length());
             outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
             outputStream.flush();
             outputStream.close();
-            System.out.println("sent: " + msg);
+            System.out.print(msg);
+        }
+    }
+
+    private static class MyServiceHandler implements HttpHandler {
+
+        @Override
+        public void handle(HttpExchange httpExchange) throws IOException {
+            OutputStream outputStream = httpExchange.getResponseBody();
+            String msg = "Taking action via webhook ...\n";
+            httpExchange.sendResponseHeaders(200, msg.length());
+            outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
+            outputStream.flush();
+            outputStream.close();
+            System.out.print( msg);
         }
     }
 
