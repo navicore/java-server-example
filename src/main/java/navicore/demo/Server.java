@@ -28,6 +28,10 @@ public class Server implements Runnable {
             description = "Server port.")
     int port = 8443;
 
+    @CommandLine.Option(names = {"-h", "--hostname"},
+            description = "Hostname of listener interface.")
+    String hostname = "0.0.0.0";
+
     @CommandLine.Option(names = {"-k", "--keystore"},
             description = "Full path to the keystore (jks file).")
     String keystorePath = null;
@@ -46,9 +50,9 @@ public class Server implements Runnable {
         }
         HttpServer server;
         try {
-            log.info("Starting server on port {}", port);
+            log.info("Starting server {} on port {}", hostname, port);
             server = HttpServer.create(
-                    new InetSocketAddress("localhost", port), 0);
+                    new InetSocketAddress(hostname, port), 0);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);

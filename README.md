@@ -10,3 +10,5 @@ or
 ```bash
 mvn compile exec:java
 ```
+
+update your `/etc/hosts` file to make hosts `actor1` and `actor2` work on localhost
