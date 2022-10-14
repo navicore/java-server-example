@@ -24,6 +24,10 @@ public class Server implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(Server.class);
 
+    @CommandLine.Option(names = {"-p", "--port"},
+            description = "Server port.")
+    int port = 8443;
+
     @CommandLine.Option(names = {"-k", "--keystore"},
             description = "Full path to the keystore (jks file).")
     String keystorePath = null;
@@ -35,15 +39,16 @@ public class Server implements Runnable {
     @Override
     public void run() {
         if (keystorePath != null) {
-            log.info("Keystore: " + keystorePath);
+            log.info("Keystore: {}", keystorePath);
         }
         if (webhookUrl != null) {
-            log.info("Webhook: " + webhookUrl);
+            log.info("Webhook: {}", webhookUrl);
         }
         HttpServer server;
         try {
+            log.info("Starting server on port {}", port);
             server = HttpServer.create(
-                    new InetSocketAddress("localhost", 8001), 0);
+                    new InetSocketAddress("localhost", port), 0);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
