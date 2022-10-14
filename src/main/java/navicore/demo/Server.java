@@ -11,19 +11,25 @@ import picocli.CommandLine.Command;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Executors;
 
 @Command(name = "Server", version = "Server 1.0", mixinStandardHelpOptions = true)
 public class Server implements Runnable {
-    
+
     private static final Logger log = LoggerFactory.getLogger(Server.class);
 
     @CommandLine.Option(names = {"-k", "--keystore"},
-               description = "Full path to the keystore (jks file).")
+            description = "Full path to the keystore (jks file).")
     String keystorePath = null;
 
     @CommandLine.Option(names = {"-w", "--webhook"},
-               description = "URL to GET when processing webhook.")
+            description = "URL to GET when processing webhook.")
     String webhookUrl = null;
 
     @Override
@@ -37,13 +43,14 @@ public class Server implements Runnable {
         HttpServer server;
         try {
             server = HttpServer.create(
-                new InetSocketAddress("localhost", 8001), 0);
+                    new InetSocketAddress("localhost", 8001), 0);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
-        server.createContext("/test", new MyServiceHandler());
         server.createContext("/webhook", new MyWebhookHandler());
+        server.createContext("/test", new MyServiceHandler(webhookUrl));
+        server.setExecutor(Executors.newCachedThreadPool());
         server.start();
     }
 
@@ -63,15 +70,40 @@ public class Server implements Runnable {
 
     private static class MyServiceHandler implements HttpHandler {
 
+        final String webhookUrl;
+
+        MyServiceHandler(String webhookUrl) {
+            this.webhookUrl = webhookUrl;
+        }
+
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
-            OutputStream outputStream = httpExchange.getResponseBody();
-            String msg = "Taking action via webhook ...";
-            httpExchange.sendResponseHeaders(200, msg.length());
-            outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
-            outputStream.flush();
-            outputStream.close();
-            log.info(msg);
+
+            try {
+                log.debug("create client");
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI(webhookUrl)).GET().build();
+                HttpClient client = HttpClient.newHttpClient();
+                log.debug("call webhook");
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                log.debug("deliver result");
+                OutputStream outputStream = httpExchange.getResponseBody();
+                String msg = response.body();
+                httpExchange.sendResponseHeaders(200, msg.length());
+                outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
+                outputStream.flush();
+                outputStream.close();
+                log.info(msg);
+
+            } catch (URISyntaxException | InterruptedException e) {
+                log.error(e.getMessage(), e);
+                throw new IOException(e);
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+                throw e;
+            }
+
         }
     }
 
