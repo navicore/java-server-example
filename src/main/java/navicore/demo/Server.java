@@ -80,14 +80,11 @@ public class Server implements Runnable {
         public void handle(HttpExchange httpExchange) throws IOException {
 
             try {
-                log.debug("create client");
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(new URI(webhookUrl)).GET().build();
                 HttpClient client = HttpClient.newHttpClient();
-                log.debug("call webhook");
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                log.debug("deliver result");
                 OutputStream outputStream = httpExchange.getResponseBody();
                 String msg = response.body();
                 httpExchange.sendResponseHeaders(200, msg.length());
@@ -99,9 +96,6 @@ public class Server implements Runnable {
             } catch (URISyntaxException | InterruptedException e) {
                 log.error(e.getMessage(), e);
                 throw new IOException(e);
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-                throw e;
             }
 
         }
