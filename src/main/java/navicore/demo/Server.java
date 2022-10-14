@@ -3,6 +3,8 @@ package navicore.demo;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -13,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 
 @Command(name = "Server", version = "Server 1.0", mixinStandardHelpOptions = true)
 public class Server implements Runnable {
+    
+    private static final Logger log = LoggerFactory.getLogger(Server.class);
 
     @CommandLine.Option(names = {"-k", "--keystore"},
                description = "Full path to the keystore (jks file).")
@@ -25,10 +29,10 @@ public class Server implements Runnable {
     @Override
     public void run() {
         if (keystorePath != null) {
-            System.out.println("Keystore: " + keystorePath);
+            log.info("Keystore: " + keystorePath);
         }
         if (webhookUrl != null) {
-            System.out.println("Webhook: " + webhookUrl);
+            log.info("Webhook: " + webhookUrl);
         }
         HttpServer server;
         try {
@@ -48,12 +52,12 @@ public class Server implements Runnable {
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             OutputStream outputStream = httpExchange.getResponseBody();
-            String msg = "The buck stops here.\n";
+            String msg = "The buck stops here.";
             httpExchange.sendResponseHeaders(200, msg.length());
             outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
             outputStream.flush();
             outputStream.close();
-            System.out.print(msg);
+            log.info(msg);
         }
     }
 
@@ -62,12 +66,12 @@ public class Server implements Runnable {
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             OutputStream outputStream = httpExchange.getResponseBody();
-            String msg = "Taking action via webhook ...\n";
+            String msg = "Taking action via webhook ...";
             httpExchange.sendResponseHeaders(200, msg.length());
             outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
             outputStream.flush();
             outputStream.close();
-            System.out.print( msg);
+            log.info(msg);
         }
     }
 
