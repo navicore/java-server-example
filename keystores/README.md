@@ -69,3 +69,9 @@ keytool -importcert -noprompt -alias actor1 -file actor1.crt -keypass password -
 
 You should now have two *trust* stores: actor1_trust.jks and actor2_trust.jks to deploy for your mTLS test.
 
+
+to also support public cert authority...
+
+```bash
+keytool -importkeystore -noprompt -srckeystore /etc/ssl/certs/java/cacerts -destkeystore actor1_trust.jks -deststoretype JKS -srcstorepass changeit -deststorepass password
+```
