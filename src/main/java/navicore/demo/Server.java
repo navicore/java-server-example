@@ -118,6 +118,7 @@ public class Server implements Runnable {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
+            log.debug("process incoming webhook");
             OutputStream outputStream = httpExchange.getResponseBody();
             String msg = "The buck stops here.";
             httpExchange.sendResponseHeaders(200, msg.length());
@@ -139,12 +140,13 @@ public class Server implements Runnable {
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
 
-            log.debug("handle request");
+            log.debug("handle service request");
             try {
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(new URI(webhookUrl)).GET().build();
                 HttpClient client = HttpClient.newHttpClient();
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                log.debug("resultCode: {}", response.statusCode());
 
                 OutputStream outputStream = httpExchange.getResponseBody();
                 String msg = response.body();
@@ -155,6 +157,9 @@ public class Server implements Runnable {
                 log.info(msg);
 
             } catch (URISyntaxException | InterruptedException e) {
+                log.error(e.getMessage(), e);
+                throw new IOException(e);
+            } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 throw new IOException(e);
             }
