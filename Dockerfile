@@ -6,7 +6,7 @@ EXPOSE 8443
 
 RUN mkdir -p /app
 
-COPY target/java-server-example*with-dependencies.jar /app/java-server-example.jar
+COPY "./target/java-server-example*with-dependencies.jar" "/app/java-server-example.jar"
 
 WORKDIR /app
 
