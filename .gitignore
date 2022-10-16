@@ -1,5 +1,7 @@
 keystores/
 .idea/
+.metals/
+.bloop/
 .settings/
 target/
 pom.xml.tag

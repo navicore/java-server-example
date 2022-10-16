@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-actor2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-actor2
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-actor2
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command: ["/opt/java/openjdk/bin/java"]
+        args: [
+          "-jar",
+          "/app/java-server-example.jar",
+          "-k",
+          "/var/jks-volume/actor2_keystore.jks",
+          "-p",
+          "8443",
+          "-h",
+          "0.0.0.0",
+          "-P",
+          "changeit",
+          "-a",
+          "-c"
+        ]
+        volumeMounts:
+          - name: jks-volume
+            mountPath: /var/jks-volume
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: 102m
+          requests:
+            memory: "128Mi"
+            cpu: 102m
+      volumes:
+        - name: jks-volume
+          secret:
+            secretName: actor2keystore.jks
