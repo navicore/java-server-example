@@ -36,6 +36,7 @@ java -jar ./target/java-server-example-1.0-SNAPSHOT-jar-with-dependencies.jar -k
 
 ```
 
-hit `actor1` with a `curl -kv https://localhost:8443/test` and hopefully it will
+hit `actor1` with a `curl -kv https://localhost:7443/test` and hopefully it will
 webhook to `actor2` and get a message for you.
 
+Then deploy the chart in the `chart` dir and start port forwarding and try it there.
