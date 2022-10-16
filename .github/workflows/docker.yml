@@ -26,7 +26,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: 18
-        distribution: temurin
+        distribution: zulu
     - name: Run tests and Build superjar
       run: mvn package
     - name: Build Docker Image
