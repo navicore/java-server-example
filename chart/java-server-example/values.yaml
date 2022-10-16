@@ -1,5 +1,5 @@
 image:
   repository: navicore/java-server-example
-  tag: "v1.0.3"
+  tag: "v1.0.4"
 
 affinity: "java-server-example"
