@@ -38,7 +38,7 @@ jobs:
     - name: Build Docker Image
       uses: docker/build-push-action@v3
       with:
-        context .
+        context: .
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: navicore/java-server-example
