@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 class MyWebhookHandler implements HttpHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(MyWebhookHandler.class);
+    static final Logger log = LoggerFactory.getLogger(MyWebhookHandler.class);
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {

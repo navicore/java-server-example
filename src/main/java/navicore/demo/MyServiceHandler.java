@@ -17,11 +17,11 @@ import java.nio.charset.StandardCharsets;
 
 class MyServiceHandler implements HttpHandler {
 
-    private final Logger log = LoggerFactory.getLogger(MyWebhookHandler.class);
+    final Logger log = LoggerFactory.getLogger(MyWebhookHandler.class);
 
-    private final SSLContext sslContext;
+    final SSLContext sslContext;
     final String webhookUrl;
-    private final boolean presentClientAuth;
+    final boolean presentClientAuth;
 
     MyServiceHandler(boolean presentClientAuth, String webhookUrl, SSLContext sslContext) {
         this.webhookUrl = webhookUrl;
