@@ -24,3 +24,18 @@ mvn compile exec:java
 ```
 
 update your `/etc/hosts` file to make hosts `actor1` and `actor2` work on localhost
+
+```bash
+#start actor1
+
+java -jar ./target/java-server-example-1.0-SNAPSHOT-jar-with-dependencies.jar -k keystores/actor1_keystore.jks -w https://actor2:8443/webhook -p 7443 -h actor1 -P changeit -a -c
+
+#start actor2
+
+java -jar ./target/java-server-example-1.0-SNAPSHOT-jar-with-dependencies.jar -k keystores/actor2_keystore.jks -p 7443 -h actor2 -P changeit -a -c
+
+```
+
+hit `actor1` with a `curl -kv https://localhost:8443/test` and hopefully it will
+webhook to `actor2` and get a message for you.
+
