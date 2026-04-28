@@ -1,3 +1,8 @@
+<!-- ghmig:moved -->
+> **This repository has moved to [https://git.navicore.tech/navicore/java-server-example](https://git.navicore.tech/navicore/java-server-example).**
+>
+> The GitHub copy is archived and no longer maintained.
+
 # java-server-example
 
 Hello World to play with mTLS and K8S
